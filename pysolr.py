@@ -1261,7 +1261,7 @@ class ZooKeeper(object):
 
         try:
             watch()
-        except NoNodeError, e:
+        except NoNodeError as  e:
             if (self.hasClusterState and not self.collections.has_key(collection)) or not self.hasClusterState:
                 raise SolrError("No collection %s" % collection)
 
