@@ -10,7 +10,7 @@ import re
 import time
 from xml.etree import ElementTree
 
-import requests
+from .crequests import CRequests as requests
 
 try:
     from kazoo.client import KazooClient, KazooState
@@ -319,8 +319,8 @@ class Solr(object):
         self.url = url
         self.timeout = timeout
         self.log = self._get_log()
-        self.session = requests.Session()
-        self.session.stream = False
+        self.session = requests(stream=False)
+        # self.session.stream = False
         self.results_cls = results_cls
 
     def __del__(self):
