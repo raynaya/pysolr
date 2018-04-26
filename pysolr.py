@@ -9,8 +9,10 @@ import random
 import re
 import time
 from xml.etree import ElementTree
-
+from requests import Timeout, ConnectionError, RequestException
 from .crequests import CRequests as requests
+
+session = requests(stream=False) # our own session pool created
 
 try:
     from kazoo.client import KazooClient, KazooState
@@ -320,12 +322,11 @@ class Solr(object):
         self.timeout = timeout
         self.log = self._get_log()
         self.session = requests(stream=False)
-        # self.session.stream = False
         self.results_cls = results_cls
 
     def __del__(self):
         if hasattr(self, "session"):
-            self.session.close()
+            session.close()
 
     def _get_log(self):
         return LOG
@@ -355,7 +356,7 @@ class Solr(object):
         start_time = time.time()
 
         try:
-            requests_method = getattr(self.session, method, 'get')
+            requests_method = getattr(session, method, 'get')
         except AttributeError as err:
             raise SolrError("Unable to send HTTP method '{0}.".format(method))
 
@@ -369,11 +370,11 @@ class Solr(object):
         try:
             resp = requests_method(url, data=bytes_body, headers=headers, files=files,
                                    timeout=self.timeout)
-        except requests.exceptions.Timeout as err:
+        except Timeout as err:
             error_message = "Connection to server '%s' timed out: %s"
             self.log.error(error_message, url, err, exc_info=True)
             raise SolrError(error_message % (url, err))
-        except requests.exceptions.ConnectionError as err:
+        except ConnectionError as err:
             error_message = "Failed to connect to server at '%s', are you sure that URL is correct? Checking it in a browser might help: %s"
             params = (url, err)
             self.log.error(error_message, *params, exc_info=True)
@@ -1173,8 +1174,8 @@ class SolrCloud(Solr):
         retry_count=self.retry_count
         while retry_count > 0:
             try:
-                return self._randomized_request(method, path, body, headers, files)
-            except (requests.exceptions.RequestException, SolrError) as e:
+                return self.a(method, path, body, headers, files)
+            except (RequestException, SolrError) as e:
                 LOG.warning('RequestException, retrying after %fs', self.retry_timeout, exc_info=True)
                 time.sleep(self.retry_timeout)  # give zookeeper time to notice
                 retry_count -= 1

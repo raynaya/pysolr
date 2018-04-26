@@ -11,7 +11,7 @@ from requests import adapters
 CONNECT_TIMEOUT = 10.0
 READ_TIMEOUT = 30.0
 
-NUM_POOLS = 100
+NUM_POOLS = 200
 POOL_MAXSIZE = 1000
 
 
