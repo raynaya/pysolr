@@ -9,9 +9,7 @@ import random
 import re
 import time
 from xml.etree import ElementTree
-
 from requests import Timeout, ConnectionError, RequestException
-
 from crequests import CRequests as requests
 
 session = requests(stream=False) # our own session pool created
@@ -276,7 +274,7 @@ class Results(object):
         response_part = decoded.get('response') or {}
         self.docs = response_part.get('docs', ())
         self.hits = response_part.get('numFound', 0)
-        self.max_score = response_part.get('maxScore', 1.0)
+        self.max_score=response_part.get('maxScore',1.0)
 
         # other response metadata
         self.debug = decoded.get('debug', {})
@@ -1177,7 +1175,7 @@ class SolrCloud(Solr):
         retry_count=self.retry_count
         while retry_count > 0:
             try:
-                return self.a(method, path, body, headers, files)
+                return self._randomized_request(method, path, body, headers, files)
             except (RequestException, SolrError) as e:
                 LOG.warning('RequestException, retrying after %fs', self.retry_timeout, exc_info=True)
                 time.sleep(self.retry_timeout)  # give zookeeper time to notice
