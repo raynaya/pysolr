@@ -9,8 +9,10 @@ import random
 import re
 import time
 from xml.etree import ElementTree
+
 from requests import Timeout, ConnectionError, RequestException
-from .crequests import CRequests as requests
+
+from crequests import CRequests as requests
 
 session = requests(stream=False) # our own session pool created
 
@@ -274,6 +276,7 @@ class Results(object):
         response_part = decoded.get('response') or {}
         self.docs = response_part.get('docs', ())
         self.hits = response_part.get('numFound', 0)
+        self.max_score = response_part.get('maxScore', 1.0)
 
         # other response metadata
         self.debug = decoded.get('debug', {})
