@@ -9,7 +9,9 @@ import random
 import re
 import time
 from xml.etree import ElementTree
+
 from requests import Timeout, ConnectionError, RequestException
+
 from crequests import CRequests as requests
 
 session = requests(stream=False) # our own session pool created
@@ -291,6 +293,11 @@ class Results(object):
 
     def __iter__(self):
         return iter(self.docs)
+
+    def __str__(self):
+        return "hits:{}, max_score:{}, docs: {} .. For more values update the __str__ method".format(self.hits,
+                                                                                                     self.max_score,
+                                                                                                     self.docs)
 
 
 class Solr(object):
