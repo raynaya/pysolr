@@ -332,9 +332,10 @@ class Solr(object):
         self.session = requests(stream=False)
         self.results_cls = results_cls
 
-    def __del__(self):
-        if hasattr(self, "session"):
-            session.close()
+    #stop closing collection as it defeats the purpose of using pool
+    # def __del__(self):
+    #     if hasattr(self, "session"):
+    #         session.close()
 
     def _get_log(self):
         return LOG
