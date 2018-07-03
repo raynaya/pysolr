@@ -11,8 +11,8 @@ from requests import adapters
 CONNECT_TIMEOUT = 10.0
 READ_TIMEOUT = 30.0
 
-NUM_POOLS = 200
-POOL_MAXSIZE = 1000
+NUM_POOLS = 20
+POOL_MAXSIZE = 200
 
 
 class CRequests:
