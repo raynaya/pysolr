@@ -1236,6 +1236,7 @@ class ZooKeeper(object):
                 self.state = state
         self.zk.add_listener(connectionListener)
 
+
         @self.zk.DataWatch(ZooKeeper.CLUSTER_STATE)
         def watchClusterState(data, *args, **kwargs):
             if not data:
@@ -1270,7 +1271,8 @@ class ZooKeeper(object):
             self.collections[collection] = json.loads(data[0].decode("utf8"))[collection]
 
         try:
-            watch()
+            if collection not in self.collections:
+                watch()
         except NoNodeError as  e:
             if (self.hasClusterState and not self.collections.has_key(collection)) or not self.hasClusterState:
                 raise SolrError("No collection %s" % collection)
