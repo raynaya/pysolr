@@ -12,7 +12,7 @@ CONNECT_TIMEOUT = 10.0
 READ_TIMEOUT = 30.0
 
 NUM_POOLS = 20
-POOL_MAXSIZE = 200
+POOL_MAXSIZE = 100
 
 
 class CRequests:
@@ -22,8 +22,10 @@ class CRequests:
         self.requests.stream = stream
         self.requests.trust_env = False
         self.requests.mount('http://', adapters.HTTPAdapter(pool_connections=NUM_POOLS,
-                                                            pool_maxsize=POOL_MAXSIZE))
+                                                            pool_maxsize=POOL_MAXSIZE,
+                                                            DEFAULT_POOLBLOCK=False))
         self.requests.mount('https://', adapters.HTTPAdapter(pool_connections=NUM_POOLS,
+                                                             DEFAULT_POOLBLOCK=False,
                                                              pool_maxsize=POOL_MAXSIZE))
 
         self.tuple = (CONNECT_TIMEOUT, READ_TIMEOUT)
