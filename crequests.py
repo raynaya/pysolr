@@ -8,11 +8,11 @@ Wrapper over requests library to provide utility stuff.
 from requests import Session
 from requests import adapters
 
-CONNECT_TIMEOUT = 10.0
-READ_TIMEOUT = 30.0
+CONNECT_TIMEOUT = 5.0
+READ_TIMEOUT = 15.0
 
 NUM_POOLS = 20
-POOL_MAXSIZE = 100
+POOL_MAXSIZE = 200
 
 
 class CRequests:
