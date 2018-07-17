@@ -367,7 +367,7 @@ class Solr(object):
         start_time = time.time()
 
         try:
-            requests_method = getattr(session, method, 'get')
+            requests_method = getattr(self.session, method, 'get')
         except AttributeError as err:
             raise SolrError("Unable to send HTTP method '{0}.".format(method))
 
