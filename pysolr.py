@@ -8,14 +8,13 @@ import os
 import random
 import re
 import time
-import requests
 from xml.etree import ElementTree
 
 from requests import Timeout, ConnectionError, RequestException
 
-# from crequests import CRequests as requests
+from crequests import CRequests as requests
 
-# session = requests(stream=False) # our own session pool created
+session = requests(stream=False) # our own session pool created
 
 try:
     from kazoo.client import KazooClient, KazooState
@@ -330,8 +329,7 @@ class Solr(object):
         self.url = url
         self.timeout = timeout
         self.log = self._get_log()
-        # self.session = requests(stream=False)
-        self.session = requests.Session()
+        self.session = requests(stream=False)
         self.results_cls = results_cls
 
     #stop closing collection as it defeats the purpose of using pool
@@ -367,7 +365,7 @@ class Solr(object):
         start_time = time.time()
 
         try:
-            requests_method = getattr(self.session, method, 'get')
+            requests_method = getattr(session, method, 'get')
         except AttributeError as err:
             raise SolrError("Unable to send HTTP method '{0}.".format(method))
 
