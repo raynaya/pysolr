@@ -20,7 +20,7 @@ POOL_MAXSIZE = 1000
 class CRequests:
 
     def __init__(self, CONNECT_TIMEOUT=CONNECT_TIMEOUT, READ_TIMEOUT=READ_TIMEOUT, stream=False):
-        self.requests = FuturesSession(max_workers=100)
+        self.requests = FuturesSession(max_workers=50)
         self.requests.stream = stream
         self.requests.trust_env = False
         self.requests.mount('http://', adapters.HTTPAdapter(pool_connections=NUM_POOLS,
@@ -39,7 +39,9 @@ class CRequests:
 
     def get(self, url, **kwargs):
         kwargs.setdefault('timeout', self.tuple)
+        print("blocking or not : {}".format(url))
         future=self.requests.get(url, **kwargs)
+        print("response received for {}".format(url))
         return future.result(timeout=READ_TIMEOUT)
 
     def options(self, url, **kwargs):
@@ -54,7 +56,9 @@ class CRequests:
 
     def post(self, url, data=None, json=None, **kwargs):
         kwargs.setdefault('timeout', self.tuple)
+        print("blocking or not : {}".format(url))
         future= self.requests.post(url, data=data, json=json, **kwargs)
+        print("response received for {}".format(url))
         return future.result(timeout=READ_TIMEOUT)
 
     def put(self, url, data=None, **kwargs):
