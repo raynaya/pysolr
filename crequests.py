@@ -20,7 +20,7 @@ POOL_MAXSIZE = 1000
 class CRequests:
 
     def __init__(self, CONNECT_TIMEOUT=CONNECT_TIMEOUT, READ_TIMEOUT=READ_TIMEOUT, stream=False):
-        self.requests = FuturesSession()
+        self.requests = FuturesSession(max_workers=100)
         self.requests.stream = stream
         self.requests.trust_env = False
         self.requests.mount('http://', adapters.HTTPAdapter(pool_connections=NUM_POOLS,
