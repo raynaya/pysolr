@@ -20,61 +20,49 @@ POOL_MAXSIZE = 1000
 class CRequests:
 
     def __init__(self, CONNECT_TIMEOUT=CONNECT_TIMEOUT, READ_TIMEOUT=READ_TIMEOUT, stream=False):
-        self.requests = FuturesSession(max_workers=50)
+        self.requests = Session()
         self.requests.stream = stream
         self.requests.trust_env = False
         self.requests.mount('http://', adapters.HTTPAdapter(pool_connections=NUM_POOLS,
                                                             pool_maxsize=POOL_MAXSIZE,
-                                                            pool_block=False))
+                                                            pool_block=True))
         self.requests.mount('https://', adapters.HTTPAdapter(pool_connections=NUM_POOLS,
-                                                             pool_block=False,
+                                                             pool_block=True,
                                                              pool_maxsize=POOL_MAXSIZE))
 
         self.tuple = (CONNECT_TIMEOUT, READ_TIMEOUT)
 
     def request(self, method, url, **kwargs):
         kwargs.setdefault('timeout', self.tuple)
-        future = self.requests.request(method, url, **kwargs)
-        return future.result(timeout=READ_TIMEOUT)
+        return self.requests.request(method, url, **kwargs)
 
     def get(self, url, **kwargs):
         kwargs.setdefault('timeout', self.tuple)
-        print("blocking or not : {}".format(url))
-        future=self.requests.get(url, **kwargs)
-        print("response received for {}".format(url))
-        return future.result(timeout=READ_TIMEOUT)
+        return self.requests.get(url, **kwargs)
 
     def options(self, url, **kwargs):
         kwargs.setdefault('timeout', self.tuple)
-        future= self.requests.options(url, **kwargs)
-        return future.result(timeout=READ_TIMEOUT)
+        return self.requests.options(url, **kwargs)
 
     def head(self, url, **kwargs):
         kwargs.setdefault('timeout', self.tuple)
-        future= self.requests.head(url, **kwargs)
-        return future.result(timeout=READ_TIMEOUT)
+        return self.requests.head(url, **kwargs)
 
     def post(self, url, data=None, json=None, **kwargs):
         kwargs.setdefault('timeout', self.tuple)
-        print("blocking or not : {}".format(url))
-        future= self.requests.post(url, data=data, json=json, **kwargs)
-        print("response received for {}".format(url))
-        return future.result(timeout=READ_TIMEOUT)
+        return self.requests.post(url, data=data, json=json, **kwargs)
 
     def put(self, url, data=None, **kwargs):
         kwargs.setdefault('timeout', self.tuple)
-        future= self.requests.put(url, data=data, **kwargs)
-        return future.result(timeout=READ_TIMEOUT)
+        return self.requests.put(url, data=data, **kwargs)
 
     def patch(self, url, data=None, **kwargs):
         kwargs.setdefault('timeout', self.tuple)
-        future= self.requests.patch(url, data=data, **kwargs)
-        return future.result(timeout=READ_TIMEOUT)
+        return self.requests.patch(url, data=data, **kwargs)
 
     def delete(self, url, **kwargs):
         kwargs.setdefault('timeout', self.tuple)
-        future= self.requests.delete(url, **kwargs)
-        return future.result(timeout=READ_TIMEOUT)
+        return self.requests.delete(url, **kwargs)
 
 
     def close(self):
