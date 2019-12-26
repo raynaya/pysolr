@@ -25,9 +25,9 @@ class CRequests:
         self.requests.trust_env = False
         self.requests.mount('http://', adapters.HTTPAdapter(pool_connections=NUM_POOLS,
                                                             pool_maxsize=POOL_MAXSIZE,
-                                                            pool_block=True))
+                                                            pool_block=False))
         self.requests.mount('https://', adapters.HTTPAdapter(pool_connections=NUM_POOLS,
-                                                             pool_block=True,
+                                                             pool_block=False,
                                                              pool_maxsize=POOL_MAXSIZE))
 
         self.tuple = (CONNECT_TIMEOUT, READ_TIMEOUT)
